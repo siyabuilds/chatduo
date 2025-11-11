@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import Swal from "sweetalert2";
 
 const STORAGE_KEY = "chatduo_id";
 const USERNAME_KEY = "chatduo_username";
@@ -43,20 +44,36 @@ export default function Home() {
     } else {
       // ID is still valid, ask user if they want to use it
       setIsLoading(false);
-      const useExisting = window.confirm(
-        `Would you like to use the existing ID "${storedId}"${
-          storedUsername ? ` with username "${storedUsername}"` : ""
-        } for a chat?`
-      );
-
-      if (useExisting) {
-        // User wants to use existing ID
-        proceedWithId(storedId, storedUsername || "");
-      } else {
-        // Clear localStorage and show input field
-        clearStorage();
-        setShowInput(true);
-      }
+      Swal.fire({
+        title: "Existing Session Found",
+        html: `Would you like to use the existing ID <strong>"${storedId}"</strong>${
+          storedUsername
+            ? ` with username <strong>"${storedUsername}"</strong>`
+            : ""
+        } for a chat?`,
+        icon: "question",
+        showCancelButton: true,
+        confirmButtonText: "Yes, use it!",
+        cancelButtonText: "No, create new",
+        confirmButtonColor: "#ea580c",
+        cancelButtonColor: "#4b5563",
+        background: "#2a2a2a",
+        color: "#e5e7eb",
+        customClass: {
+          popup: "rounded-lg",
+          confirmButton: "rounded-lg",
+          cancelButton: "rounded-lg",
+        },
+      }).then((result) => {
+        if (result.isConfirmed) {
+          // User wants to use existing ID
+          proceedWithId(storedId, storedUsername || "");
+        } else {
+          // Clear localStorage and show input field
+          clearStorage();
+          setShowInput(true);
+        }
+      });
     }
   };
 
@@ -104,7 +121,7 @@ export default function Home() {
   return (
     <div className="flex min-h-screen items-center justify-center bg-[#1a1a1a]">
       <main className="flex flex-col items-center gap-8 p-8 max-w-md w-full">
-        <h1 className="text-4xl font-bold text-gray-200">ChatDuo</h1>
+        <h1 className="text-4xl font-bold gradient-text">ChatDuo</h1>
         <p className="text-lg text-gray-400 text-center">
           Welcome to ChatDuo! Create a unique chat ID to start chatting with
           others.

@@ -1,7 +1,9 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import { useParams, useRouter } from "next/navigation";
+import Swal from "sweetalert2";
+import { Trash2, LogOut } from "lucide-react";
 
 type Message = {
   id: string;
@@ -23,7 +25,6 @@ export default function ChatPage() {
   const [username, setUsername] = useState("");
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState("");
-  const messagesEndRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     // Get username from localStorage
@@ -47,15 +48,6 @@ export default function ChatPage() {
 
     return () => clearInterval(interval);
   }, [chatId, router]);
-
-  useEffect(() => {
-    // Auto-scroll to bottom when new messages arrive
-    scrollToBottom();
-  }, [messages]);
-
-  const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  };
 
   const fetchMessages = async () => {
     try {
@@ -105,11 +97,25 @@ export default function ChatPage() {
   };
 
   const handleDeleteChat = async () => {
-    const confirmDelete = window.confirm(
-      "Are you sure you want to delete this entire chat? This cannot be undone."
-    );
+    const result = await Swal.fire({
+      title: "Delete Chat?",
+      text: "Are you sure you want to delete this entire chat? This cannot be undone.",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Yes, delete it!",
+      cancelButtonText: "Cancel",
+      confirmButtonColor: "#dc2626",
+      cancelButtonColor: "#4b5563",
+      background: "#2a2a2a",
+      color: "#e5e7eb",
+      customClass: {
+        popup: "rounded-lg",
+        confirmButton: "rounded-lg",
+        cancelButton: "rounded-lg",
+      },
+    });
 
-    if (!confirmDelete) return;
+    if (!result.isConfirmed) return;
 
     try {
       const response = await fetch(`/api/chat/${chatId}`, {
@@ -121,13 +127,52 @@ export default function ChatPage() {
         localStorage.removeItem(STORAGE_KEY);
         localStorage.removeItem(USERNAME_KEY);
         localStorage.removeItem("chatduo_timestamp");
+
+        await Swal.fire({
+          title: "Deleted!",
+          text: "Chat has been deleted successfully.",
+          icon: "success",
+          confirmButtonColor: "#ea580c",
+          background: "#2a2a2a",
+          color: "#e5e7eb",
+          timer: 2000,
+          showConfirmButton: false,
+          customClass: {
+            popup: "rounded-lg",
+          },
+        });
+
         router.push("/");
       } else {
         setError("Failed to delete chat");
+        await Swal.fire({
+          title: "Error!",
+          text: "Failed to delete chat. Please try again.",
+          icon: "error",
+          confirmButtonColor: "#ea580c",
+          background: "#2a2a2a",
+          color: "#e5e7eb",
+          customClass: {
+            popup: "rounded-lg",
+            confirmButton: "rounded-lg",
+          },
+        });
       }
     } catch (err) {
       console.error("Failed to delete chat:", err);
       setError("Failed to delete chat");
+      await Swal.fire({
+        title: "Error!",
+        text: "Failed to delete chat. Please try again.",
+        icon: "error",
+        confirmButtonColor: "#ea580c",
+        background: "#2a2a2a",
+        color: "#e5e7eb",
+        customClass: {
+          popup: "rounded-lg",
+          confirmButton: "rounded-lg",
+        },
+      });
     }
   };
 
@@ -149,34 +194,38 @@ export default function ChatPage() {
   }
 
   return (
-    <div className="flex flex-col min-h-screen bg-[#1a1a1a]">
+    <div className="flex flex-col h-screen bg-[#1a1a1a]">
       {/* Header */}
-      <header className="bg-[#2a2a2a] border-b border-gray-700 p-4 flex items-center justify-between">
+      <header className="fixed top-0 left-0 right-0 bg-[#2a2a2a] border-b border-gray-700 p-4 flex items-center justify-between z-10">
         <div className="flex items-center gap-4">
           <h1 className="text-2xl font-bold text-gray-200">ChatDuo</h1>
           <div className="flex flex-col">
-            <span className="text-sm text-gray-400">Chat ID: {chatId}</span>
+            <span className="text-sm text-gray-400">
+              Chat ID: <span className="font-mono">{chatId}</span>
+            </span>
             <span className="text-sm text-gray-400">You: {username}</span>
           </div>
         </div>
         <div className="flex gap-2">
           <button
             onClick={handleLeaveChat}
-            className="px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white rounded-lg transition-colors"
+            className="p-2 bg-gray-600 hover:bg-gray-700 text-white rounded-lg transition-colors"
+            title="Leave Chat"
           >
-            Leave Chat
+            <LogOut size={20} />
           </button>
           <button
             onClick={handleDeleteChat}
-            className="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors"
+            className="p-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors"
+            title="Delete Chat"
           >
-            Delete Chat
+            <Trash2 size={20} />
           </button>
         </div>
       </header>
 
       {/* Messages Container */}
-      <main className="flex-1 overflow-y-auto p-4 space-y-4">
+      <main className="flex-1 overflow-y-auto p-4 space-y-4 mt-[73px] mb-[89px]">
         {messages.length === 0 ? (
           <div className="flex items-center justify-center h-full">
             <p className="text-gray-400 text-center">
@@ -209,11 +258,10 @@ export default function ChatPage() {
             </div>
           ))
         )}
-        <div ref={messagesEndRef} />
       </main>
 
       {/* Input Form */}
-      <footer className="bg-[#2a2a2a] border-t border-gray-700 p-4">
+      <footer className="fixed bottom-0 left-0 right-0 bg-[#2a2a2a] border-t border-gray-700 p-4 z-10">
         <form onSubmit={handleSendMessage} className="flex gap-2">
           <input
             type="text"
