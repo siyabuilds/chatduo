@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { Info } from "lucide-react";
 import Swal from "sweetalert2";
 
 const STORAGE_KEY = "chatduo_id";
@@ -110,6 +111,45 @@ export default function Home() {
     router.push(`/chat/${id}`);
   };
 
+  const showInfoModal = () => {
+    Swal.fire({
+      title: "How to Get Started",
+      html: `
+        <div style="text-align: left; color: #e5e7eb;">
+          <h3 style="color: #ea580c; font-weight: bold; margin-bottom: 12px;">Getting Started:</h3>
+          <ol style="margin-left: 20px; margin-bottom: 16px;">
+            <li style="margin-bottom: 8px;">Enter a username (can be anything memorable)</li>
+            <li style="margin-bottom: 8px;">Create a unique chat ID (more than 5 characters)</li>
+            <li style="margin-bottom: 8px;">Share the chat ID with someone you want to chat with</li>
+            <li style="margin-bottom: 8px;">Both users should use the same chat ID to connect</li>
+          </ol>
+          <h3 style="color: #ea580c; font-weight: bold; margin-bottom: 12px;">💡 Quick Tip:</h3>
+          <p style="margin-bottom: 16px;">
+            Your username and chat ID can be <strong>random but memorable values</strong>. 
+            These are <strong>NOT account details</strong> and don't need to be secure. 
+            Think of them like a temporary room name and nickname.
+          </p>
+          <h3 style="color: #ea580c; font-weight: bold; margin-bottom: 12px;">Important Notice:</h3>
+          <p style="margin-bottom: 8px;">
+            <strong>Chats are NOT saved permanently.</strong> Messages will be deleted after 15 minutes of inactivity.
+          </p>
+          <p>
+            Please save any important information elsewhere before leaving the chat.
+          </p>
+        </div>
+      `,
+      confirmButtonText: "Got it!",
+      confirmButtonColor: "#ea580c",
+      background: "#2a2a2a",
+      color: "#e5e7eb",
+      customClass: {
+        popup: "rounded-lg",
+        confirmButton: "rounded-lg",
+      },
+      width: "600px",
+    });
+  };
+
   if (isLoading) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-[#1a1a1a]">
@@ -119,7 +159,16 @@ export default function Home() {
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-[#1a1a1a]">
+    <div className="flex min-h-screen items-center justify-center bg-[#1a1a1a] relative">
+      {/* Info Icon */}
+      <button
+        onClick={showInfoModal}
+        className="absolute top-6 right-6 p-2 text-gray-400 hover:text-orange-500 transition-colors rounded-full hover:bg-[#2a2a2a]"
+        aria-label="Show information"
+      >
+        <Info className="w-6 h-6" />
+      </button>
+
       <main className="flex flex-col items-center gap-8 p-8 max-w-md w-full">
         <h1 className="text-4xl font-bold gradient-text">ChatDuo</h1>
         <p className="text-lg text-gray-400 text-center">
