@@ -3,16 +3,18 @@ import { getChat, sendMessage, deleteChat } from "@/app/utils/chatMap";
 
 export async function GET(
   _req: Request,
-  { params }: { params: { chatId: string } }
+  { params }: { params: Promise<{ chatId: string }> }
 ) {
-  const messages = getChat(params.chatId);
+  const { chatId } = await params;
+  const messages = getChat(chatId);
   return NextResponse.json(messages);
 }
 
 export async function POST(
   req: Request,
-  { params }: { params: { chatId: string } }
+  { params }: { params: Promise<{ chatId: string }> }
 ) {
+  const { chatId } = await params;
   const { user, text } = await req.json();
 
   if (!user || !text) {
@@ -22,14 +24,15 @@ export async function POST(
     );
   }
 
-  const msg = sendMessage(params.chatId, user, text);
+  const msg = sendMessage(chatId, user, text);
   return NextResponse.json(msg, { status: 201 });
 }
 
 export async function DELETE(
   _req: Request,
-  { params }: { params: { chatId: string } }
+  { params }: { params: Promise<{ chatId: string }> }
 ) {
-  deleteChat(params.chatId);
+  const { chatId } = await params;
+  deleteChat(chatId);
   return NextResponse.json({ message: "Chat deleted" });
 }
