@@ -170,8 +170,10 @@ export default function Home() {
       </button>
 
       <main className="flex flex-col items-center gap-8 p-8 max-w-md w-full">
-        <h1 className="text-4xl font-bold gradient-text">ChatDuo</h1>
-        <p className="text-lg text-gray-400 text-center">
+        <h1 className="text-4xl font-bold gradient-text font-grotesk">
+          ChatDuo
+        </h1>
+        <p className="text-lg text-gray-400 text-center font-grotesk">
           Welcome to ChatDuo! Create a unique chat ID to start chatting with
           others.
         </p>
@@ -181,7 +183,7 @@ export default function Home() {
             <div className="flex flex-col gap-2">
               <label
                 htmlFor="username-input"
-                className="text-gray-300 text-sm font-medium"
+                className="text-gray-300 text-sm font-medium font-grotesk"
               >
                 Your username
               </label>
@@ -198,7 +200,7 @@ export default function Home() {
             <div className="flex flex-col gap-2">
               <label
                 htmlFor="id-input"
-                className="text-gray-300 text-sm font-medium"
+                className="text-gray-300 text-sm font-medium font-grotesk"
               >
                 Create your unique chat ID
               </label>
@@ -216,7 +218,7 @@ export default function Home() {
             </div>
             <button
               type="submit"
-              className="px-6 py-3 bg-gradient-to-r from-orange-600 to-red-600 hover:from-orange-700 hover:to-red-700 text-white font-medium rounded-lg transition-all shadow-lg hover:shadow-orange-500/50"
+              className="px-6 py-3 bg-gradient-to-r from-orange-600 to-red-600 hover:from-orange-700 hover:to-red-700 text-white font-medium rounded-lg transition-all shadow-lg hover:shadow-orange-500/50 font-grotesk"
             >
               Start Chat
             </button>

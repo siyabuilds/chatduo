@@ -198,7 +198,9 @@ export default function ChatPage() {
       {/* Header */}
       <header className="fixed top-0 left-0 right-0 bg-[#2a2a2a] border-b border-gray-700 p-4 flex items-center justify-between z-10">
         <div className="flex items-center gap-4">
-          <h1 className="text-2xl font-bold text-gray-200">ChatDuo</h1>
+          <h1 className="text-2xl font-bold text-gray-200 font-grotesk">
+            ChatDuo
+          </h1>
           <div className="flex flex-col">
             <span className="text-sm text-gray-400">
               Chat ID: <span className="font-mono">{chatId}</span>
@@ -248,7 +250,9 @@ export default function ChatPage() {
                 }`}
               >
                 <div className="flex items-baseline gap-2 mb-1">
-                  <span className="font-semibold text-sm">{message.user}</span>
+                  <span className="font-semibold text-sm font-grotesk">
+                    {message.user}
+                  </span>
                   <span className="text-xs opacity-70">
                     {formatTimestamp(message.timestamp)}
                   </span>
@@ -272,7 +276,7 @@ export default function ChatPage() {
           />
           <button
             type="submit"
-            className="px-6 py-3 bg-gradient-to-r from-orange-600 to-red-600 hover:from-orange-700 hover:to-red-700 text-white font-medium rounded-lg transition-all shadow-lg hover:shadow-orange-500/50"
+            className="px-6 py-3 bg-gradient-to-r from-orange-600 to-red-600 hover:from-orange-700 hover:to-red-700 text-white font-medium rounded-lg transition-all shadow-lg hover:shadow-orange-500/50 font-grotesk"
           >
             Send
           </button>
