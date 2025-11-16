@@ -177,6 +177,10 @@ export default function ChatPage() {
   };
 
   const handleLeaveChat = () => {
+    // Clear localStorage before leaving
+    localStorage.removeItem(STORAGE_KEY);
+    localStorage.removeItem(USERNAME_KEY);
+    localStorage.removeItem("chatduo_timestamp");
     router.push("/");
   };
 
